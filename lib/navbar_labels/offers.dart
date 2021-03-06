@@ -1,0 +1,173 @@
+import 'package:flutter/material.dart';
+import '../widgets/homecontainer.dart';
+import '../Widgets/categcont.dart';
+import '../Widgets/button.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import '../widgets/homecontainer.dart';
+// import 'package:carousel_pro/carousel_pro.dart';
+import '../Widgets/categcont.dart';
+import '../Widgets/button.dart';
+import 'dart:async';
+import '../widgets/custcont2.dart';
+
+import '../style.dart' as style;
+
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+class Offers extends StatefulWidget {
+  @override
+  _OffersState createState() => _OffersState();
+}
+
+class _OffersState extends State<Offers> {
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _markers.add(Marker(
+        markerId: MarkerId((LatLng(45.521563, -100.677433)).toString()),
+        position: _lastMapPosition,
+        infoWindow: InfoWindow(
+            title: 'Really cool place',
+            snippet: '5 Star Rating',
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (con) {
+                    return Material(
+                      child: Container(
+                        height: 300,
+                        child: CustCont2(
+                            website: 'http://prayasngo.net/',
+                            images:
+                                'https://www.google.com/maps/uv?pb=!1s0x3bd6a4c0c9c30ba5%3A0xf48173854b988f16!3m1!7e115!4shttps%3A%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipMKXDXt3vVTOuVRr8IicezXLDAFsUbOHxtKJZwt%3Dw260-h175-n-k-no!5sngo%27s%20near%20me%20-%20Google%20Search!15sCgIgAQ&imagekey=!1e10!2sAF1QipMKXDXt3vVTOuVRr8IicezXLDAFsUbOHxtKJZwt&hl=en',
+                            place: 'Amravati',
+                            stars: '4.7',
+                            address: 'aFarshi Stop, Dastur Nagar Road, Vimalnagar, Dastur Nagar, Amravati, Maharashtra 444605',
+                            icon: 'assets/images/4 87.jpg',
+                            title: 'Prayas Sevankur Bhavan',
+                            categ: ['NGO', 'Old Age Home', 'Animal Rescue']),
+                      ),
+                    );
+                  });
+            }),
+        icon: BitmapDescriptor.defaultMarker,
+      ));
+      _markers.add(Marker(
+        markerId: MarkerId((LatLng(55.521563, -122.677433)).toString()),
+        position: _lastMapPosition,
+        infoWindow: InfoWindow(
+            title: 'Really cool place',
+            snippet: '5 Star Rating',
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (con) {
+                    return Material(
+                      child: Container(
+                        height: 300,
+                        child: CustCont2(
+                            website: 'http://prayasngo.net/',
+                            images:
+                                'https://www.google.com/maps/uv?pb=!1s0x3bd6a4c0c9c30ba5%3A0xf48173854b988f16!3m1!7e115!4shttps%3A%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipMKXDXt3vVTOuVRr8IicezXLDAFsUbOHxtKJZwt%3Dw260-h175-n-k-no!5sngo%27s%20near%20me%20-%20Google%20Search!15sCgIgAQ&imagekey=!1e10!2sAF1QipMKXDXt3vVTOuVRr8IicezXLDAFsUbOHxtKJZwt&hl=en',
+                            place: 'Amravati',
+                            stars: '4.7',
+                            address: 'Farshi Stop, Dastur Nagar Road, Vimalnagar, Dastur Nagar, Amravati, Maharashtra 444605',
+                            icon: 'assets/images/4 87.jpg',
+                            title: 'Prayas Sevankur Bhavan',
+                            categ: ['NGO', 'Old Age Home', 'Animal Rescue']),
+                      ),
+                    );
+                  });
+            }),
+        icon: BitmapDescriptor.defaultMarker,
+      ));
+    });
+  }
+
+  Completer<GoogleMapController> _controller = Completer();
+
+  static const LatLng _center = const LatLng(45.521563, -122.677433);
+
+  final Set<Marker> _markers = {};
+
+  LatLng _lastMapPosition = _center;
+
+  MapType _currentMapType = MapType.normal;
+//
+  void _onMapTypeButtonPressed() {
+    setState(() {
+      _currentMapType = _currentMapType == MapType.normal
+          ? MapType.satellite
+          : MapType.normal;
+    });
+  }
+
+  void _onAddMarkerButtonPressed() {
+    setState(() {
+      _markers.add(Marker(
+        // This marker id can be anything that uniquely identifies each marker.
+        markerId: MarkerId(_lastMapPosition.toString()),
+        position: _lastMapPosition,
+        infoWindow: InfoWindow(
+          title: 'Really cool place',
+          snippet: '5 Star Rating',
+        ),
+        icon: BitmapDescriptor.defaultMarker,
+      ));
+    });
+  }
+
+  void _onCameraMove(CameraPosition position) {
+    _lastMapPosition = position.target;
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: Stack(
+        children: <Widget>[
+          GoogleMap(
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: _center,
+              zoom: 11.0,
+            ),
+            mapType: _currentMapType,
+            markers: _markers,
+            onCameraMove: _onCameraMove,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Column(
+                children: <Widget>[
+                  FloatingActionButton(
+                    onPressed: _onMapTypeButtonPressed,
+                    materialTapTargetSize: MaterialTapTargetSize.padded,
+                    backgroundColor: style.Style.buttonColor,
+                    child: const Icon(Icons.map, size: 36.0),
+                  ),
+                  SizedBox(height: 16.0),
+                  FloatingActionButton(
+                    onPressed: _onAddMarkerButtonPressed,
+                    materialTapTargetSize: MaterialTapTargetSize.padded,
+                    backgroundColor: style.Style.buttonColor,
+                    child: const Icon(Icons.add_location, size: 36.0),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
